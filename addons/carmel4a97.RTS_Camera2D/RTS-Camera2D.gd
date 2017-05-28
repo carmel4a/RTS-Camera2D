@@ -22,7 +22,7 @@ extends Camera2D
 
 # Camera control settings:
 # key - by keyboard
-# drag - by klicking mouse button, standard by right mouse button;
+# drag - by clicking mouse button, right mouse button by default;
 # edge - by moving mouse to the window edge
 # wheel - zoom in/out by mouse wheel
 export (bool) var key = true
@@ -56,7 +56,7 @@ var _prev_mouse_pos = null
 
 # Right mouse button was or is pressed.
 var __rmbk = false
-# Move camera by keys: left, top, right, botton.
+# Move camera by keys: left, top, right, bottom.
 var __keys = [false, false, false, false]
 
 func _ready():
@@ -68,8 +68,8 @@ func _ready():
 	set_process_unhandled_input(true)
 
 func _fixed_process(delta):
-	
-	# Move camera by keys defined in InputMap (ui_left/top/right/botton).
+
+	# Move camera by keys defined in InputMap (ui_left/top/right/bottom).
 	if key:
 		if __keys[0]:
 			camera_movement.x -= camera_speed * delta
@@ -113,20 +113,20 @@ func _unhandled_input(event):
 		
 		# Check if mouse wheel was used. Not handled by ImputMap!
 		if wheel:
-			# Checing if future zoom won't zoom under 0.
-			# In that cause Engine'll flip screen.
+			# Checking if future zoom won't be under 0.
+			# In that cause engine will flip screen.
 			if event.button_index == BUTTON_WHEEL_UP and\
 			camera_zoom.x - camera_zoom_speed.x > 0 and\
 			camera_zoom.y - camera_zoom_speed.y > 0:
 				camera_zoom -= camera_zoom_speed
 				set_zoom(camera_zoom)
-			# Checing if future zoom won't zoom above zoom_out_limit.
+			# Checking if future zoom won't be above zoom_out_limit.
 			if event.button_index == BUTTON_WHEEL_DOWN and\
 			camera_zoom.x + camera_zoom_speed.x < zoom_out_limit and\
 			camera_zoom.y + camera_zoom_speed.y < zoom_out_limit:
 				camera_zoom += camera_zoom_speed
 				set_zoom(camera_zoom)
-	# Control by keyboard handled by ImputMap.
+	# Control by keyboard handled by InpuMap.
 	if event.type == InputEvent.KEY and key:
 		if event.is_action_pressed("ui_left"):
 			__keys[0] = true
