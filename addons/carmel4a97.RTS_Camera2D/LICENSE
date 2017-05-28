@@ -1,11 +1,3 @@
-[plugin]
-
-name="RTS-Camera2D"
-description="A Camera2D with basic movement behavior."
-author="Kamil Lewan <carmel4a97@gmail.com>"
-version="1.0-rc.1"
-script="Plugin.gd"
-
 # Copyright 2017 Kamil Lewan <carmel4a97@gmail.com>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
