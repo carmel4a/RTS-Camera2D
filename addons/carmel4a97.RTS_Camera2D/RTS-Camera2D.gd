@@ -64,11 +64,9 @@ func _ready():
 	set_v_drag_enabled(false)
 	set_enable_follow_smoothing(true)
 	set_follow_smoothing(4)
-	set_fixed_process(true)
-	set_process_unhandled_input(true)
 
-func _fixed_process(delta):
-
+func _physics_process(delta):
+	
 	# Move camera by keys defined in InputMap (ui_left/top/right/bottom).
 	if key:
 		if __keys[0]:
@@ -82,35 +80,35 @@ func _fixed_process(delta):
 	
 	# Move camera by mouse, when it's on the margin (defined by camera_margin).
 	if edge:
-		if get_viewport().get_rect().size.x - get_viewport().get_mouse_pos().x <= camera_margin:
+		var rec = get_viewport().get_visible_rect()
+		var v = get_local_mouse_position() + rec.size/2
+		if rec.size.x - v.x <= camera_margin:
 			camera_movement.x += camera_speed * delta
-		if get_viewport().get_mouse_pos().x <= camera_margin:
+		if v.x <= camera_margin:
 			camera_movement.x -= camera_speed * delta
-		if get_viewport().get_rect().size.y - get_viewport().get_mouse_pos().y <= camera_margin:
+		if rec.size.y - v.y <= camera_margin:
 			camera_movement.y += camera_speed * delta
-		if get_viewport().get_mouse_pos().y <= camera_margin:
+		if v.y <= camera_margin:
 			camera_movement.y -= camera_speed * delta
 	
 	# When RMB is pressed, move camera by difference of mouse position
 	if drag and __rmbk:
-		camera_movement = _prev_mouse_pos - get_viewport().get_mouse_pos()
+		camera_movement = _prev_mouse_pos - get_local_mouse_position()
 	
 	# Update position of the camera.
-	set_pos(get_pos() + camera_movement * get_zoom())
+	position += camera_movement * get_zoom()
 	
 	# Set camera movement to zero, update old mouse position.
 	camera_movement = Vector2(0,0)
-	_prev_mouse_pos = get_viewport().get_mouse_pos()
+	_prev_mouse_pos = get_local_mouse_position()
 
-func _unhandled_input(event):
-	
-	if (event.type == InputEvent.MOUSE_BUTTON):
-		# Control by right mouse button.
-		if event.is_pressed() and event.button_index==2 and drag:
-			__rmbk = true
-		else:
-			__rmbk = false
-		
+func _unhandled_input( event ):
+	if event is InputEventMouseButton:
+		if drag and\
+		   event.button_index == BUTTON_RIGHT:
+			# Control by right mouse button.
+			if event.pressed: __rmbk = true
+			else: __rmbk = false
 		# Check if mouse wheel was used. Not handled by ImputMap!
 		if wheel:
 			# Checking if future zoom won't be under 0.
@@ -120,27 +118,26 @@ func _unhandled_input(event):
 			camera_zoom.y - camera_zoom_speed.y > 0:
 				camera_zoom -= camera_zoom_speed
 				set_zoom(camera_zoom)
-			# Checking if future zoom won't be above zoom_out_limit.
+				# Checking if future zoom won't be above zoom_out_limit.
 			if event.button_index == BUTTON_WHEEL_DOWN and\
 			camera_zoom.x + camera_zoom_speed.x < zoom_out_limit and\
 			camera_zoom.y + camera_zoom_speed.y < zoom_out_limit:
 				camera_zoom += camera_zoom_speed
 				set_zoom(camera_zoom)
 	# Control by keyboard handled by InpuMap.
-	if event.type == InputEvent.KEY and key:
-		if event.is_action_pressed("ui_left"):
-			__keys[0] = true
-		if event.is_action_pressed("ui_up"):
-			__keys[1] = true
-		if event.is_action_pressed("ui_right"):
-			__keys[2] = true
-		if event.is_action_pressed("ui_down"):
-			__keys[3] = true
-		if event.is_action_released("ui_left"):
-			__keys[0] = false
-		if event.is_action_released("ui_up"):
-			__keys[1] = false
-		if event.is_action_released("ui_right"):
-			__keys[2] = false
-		if event.is_action_released("ui_down"):
-			__keys[3] = false
+	if event.is_action_pressed("ui_left"):
+		__keys[0] = true
+	if event.is_action_pressed("ui_up"):
+		__keys[1] = true
+	if event.is_action_pressed("ui_right"):
+		__keys[2] = true
+	if event.is_action_pressed("ui_down"):
+		__keys[3] = true
+	if event.is_action_released("ui_left"):
+		__keys[0] = false
+	if event.is_action_released("ui_up"):
+		__keys[1] = false
+	if event.is_action_released("ui_right"):
+		__keys[2] = false
+	if event.is_action_released("ui_down"):
+		__keys[3] = false
