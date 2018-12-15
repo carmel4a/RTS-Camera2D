@@ -29,4 +29,4 @@ in inspector. You can adjust behavior of the node using following properties
 
 # Compatibly
 
-This plugin was tested in Godot Engine v2.1.3
+This plugin was tested in Godot Engine v2.1.3 (2.x banch) and v3.0 beta 1 (3.x branch).
