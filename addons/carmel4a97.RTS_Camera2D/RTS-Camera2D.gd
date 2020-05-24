@@ -1,15 +1,15 @@
 # Copyright 2017 Kamil Lewan <carmel4a97@gmail.com>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,7 +33,7 @@ export (bool) var wheel = true
 export (int) var zoom_out_limit = 100
 
 # Camera speed in px/s.
-export (int) var camera_speed = 450 
+export (int) var camera_speed = 450
 
 # Initial zoom value taken from Editor.
 var camera_zoom = get_zoom()
@@ -66,7 +66,6 @@ func _ready():
 	set_follow_smoothing(4)
 
 func _physics_process(delta):
-	
 	# Move camera by keys defined in InputMap (ui_left/top/right/bottom).
 	if key:
 		if __keys[0]:
@@ -77,7 +76,7 @@ func _physics_process(delta):
 			camera_movement.x += camera_speed * delta
 		if __keys[3]:
 			camera_movement.y += camera_speed * delta
-	
+
 	# Move camera by mouse, when it's on the margin (defined by camera_margin).
 	if edge:
 		var rec = get_viewport().get_visible_rect()
@@ -90,14 +89,26 @@ func _physics_process(delta):
 			camera_movement.y += camera_speed * delta
 		if v.y <= camera_margin:
 			camera_movement.y -= camera_speed * delta
-	
+
 	# When RMB is pressed, move camera by difference of mouse position
 	if drag and __rmbk:
 		camera_movement = _prev_mouse_pos - get_local_mouse_position()
-	
+
 	# Update position of the camera.
 	position += camera_movement * get_zoom()
-	
+
+	# Limit position to avoid getting stuck in corner
+	var size = get_viewport().get_visible_rect ().size * get_zoom().x
+	if global_position.x + size.x/2 >= limit_right:
+		global_position.x = limit_right - size.x/2
+	if global_position.y + size.y/2 >= limit_bottom:
+		global_position.y = limit_bottom - size.y/2
+	if global_position.x - size.x/2 <= limit_left:
+		global_position.x = limit_left + size.x/2
+	if global_position.y - size.y/2 <= limit_top:
+		global_position.y = limit_top + size.y/2
+
+
 	# Set camera movement to zero, update old mouse position.
 	camera_movement = Vector2(0,0)
 	_prev_mouse_pos = get_local_mouse_position()
