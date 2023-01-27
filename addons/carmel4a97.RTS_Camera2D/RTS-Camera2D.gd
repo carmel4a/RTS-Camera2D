@@ -25,22 +25,22 @@ extends Camera2D
 # drag - by clicking mouse button, right mouse button by default;
 # edge - by moving mouse to the window edge
 # wheel - zoom in/out by mouse wheel
-export (bool) var key = true
-export (bool) var drag = true
-export (bool) var edge = false
-export (bool) var wheel = true
+@export var key: bool = true
+@export var drag: bool = true
+@export var edge: bool = false
+@export var wheel: bool = true
 
-export (int) var zoom_out_limit = 100
+@export var zoom_out_limit: int = 100
 
 # Camera speed in px/s.
-export (int) var camera_speed = 450 
+@export var camera_speed: int = 450 
 
 # Initial zoom value taken from Editor.
 var camera_zoom = get_zoom()
 
 # Value meaning how near to the window edge (in px) the mouse must be,
 # to move a view.
-export (int) var camera_margin = 50
+@export var camera_margin: int = 50
 
 # It changes a camera zoom value in units... (?, but it works... it probably
 # multiplies camera size by 1+camera_zoom_speed)
@@ -60,10 +60,10 @@ var __rmbk = false
 var __keys = [false, false, false, false]
 
 func _ready():
-	set_h_drag_enabled(false)
-	set_v_drag_enabled(false)
-	set_enable_follow_smoothing(true)
-	set_follow_smoothing(4)
+	set_drag_horizontal_enabled(false)
+	set_drag_vertical_enabled(false)
+	set_position_smoothing_enabled(true)
+	set_position_smoothing_speed(4)
 
 func _physics_process(delta):
 	
@@ -104,8 +104,7 @@ func _physics_process(delta):
 
 func _unhandled_input( event ):
 	if event is InputEventMouseButton:
-		if drag and\
-		   event.button_index == BUTTON_RIGHT:
+		if drag and event.button_index == MOUSE_BUTTON_RIGHT:
 			# Control by right mouse button.
 			if event.pressed: __rmbk = true
 			else: __rmbk = false
@@ -113,13 +112,13 @@ func _unhandled_input( event ):
 		if wheel:
 			# Checking if future zoom won't be under 0.
 			# In that cause engine will flip screen.
-			if event.button_index == BUTTON_WHEEL_UP and\
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP and\
 			camera_zoom.x - camera_zoom_speed.x > 0 and\
 			camera_zoom.y - camera_zoom_speed.y > 0:
 				camera_zoom -= camera_zoom_speed
 				set_zoom(camera_zoom)
 				# Checking if future zoom won't be above zoom_out_limit.
-			if event.button_index == BUTTON_WHEEL_DOWN and\
+			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and\
 			camera_zoom.x + camera_zoom_speed.x < zoom_out_limit and\
 			camera_zoom.y + camera_zoom_speed.y < zoom_out_limit:
 				camera_zoom += camera_zoom_speed

@@ -18,12 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-tool
+@tool
 
 extends EditorPlugin
 
 func _enter_tree():
-	 add_custom_type("RTS-Camera2D", "Camera2D", preload("RTS-Camera2D.gd"), preload("node_icon.png"))
+	add_custom_type("RTS-Camera2D", "Camera2D", preload("res://addons/carmel4a97.RTS_Camera2D/RTS-Camera2D.gd"), preload("node_icon.png"))
 
 func _exit_tree():
 	remove_custom_type("RTS-Camera2D")
