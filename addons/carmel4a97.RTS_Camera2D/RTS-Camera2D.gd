@@ -104,8 +104,8 @@ func _physics_process(delta):
 	var actual_left_limit = viewport.end.x * zoom.x / 2
 	var actual_top_limit = viewport.end.y * zoom.y / 2
 	
-	position.x = clamp(position.x, actual_left_limit, limit_right - actual_left_limit)
-	position.y = clamp(position.y, actual_top_limit, limit_bottom - actual_top_limit)
+	position.x = clamp(position.x, limit_left + actual_left_limit, limit_right - actual_left_limit)
+	position.y = clamp(position.y, limit_top + actual_top_limit, limit_bottom - actual_top_limit)
 	
 	# Set camera movement to zero, update old mouse position.
 	camera_movement = Vector2(0,0)
