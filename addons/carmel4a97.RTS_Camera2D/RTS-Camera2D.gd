@@ -66,7 +66,6 @@ func _ready():
 	set_position_smoothing_speed(4)
 
 func _physics_process(delta):
-	
 	# Move camera by keys defined in InputMap (ui_left/top/right/bottom).
 	if key:
 		if __keys[0]:
@@ -97,15 +96,12 @@ func _physics_process(delta):
 	
 	# Update position of the camera.
 	position += camera_movement * get_zoom()
-	
-	# Clamp camera to bounds - used so that we cannot keep scrolling forever.
-	var zoom = get_zoom()
-	var viewport = get_viewport_rect()
-	var actual_left_limit = viewport.end.x * zoom.x / 2
-	var actual_top_limit = viewport.end.y * zoom.y / 2
-	
-	position.x = clamp(position.x, limit_left + actual_left_limit, limit_right - actual_left_limit)
-	position.y = clamp(position.y, limit_top + actual_top_limit, limit_bottom - actual_top_limit)
+
+#	force camera to center of screen positionally
+	var center = get_screen_center_position()
+	var current_target = get_target_position()
+	if current_target != center:
+		position = center
 	
 	# Set camera movement to zero, update old mouse position.
 	camera_movement = Vector2(0,0)
