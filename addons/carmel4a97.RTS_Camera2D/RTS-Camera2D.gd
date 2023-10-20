@@ -98,6 +98,15 @@ func _physics_process(delta):
 	# Update position of the camera.
 	position += camera_movement * get_zoom()
 	
+	# Clamp camera to bounds - used so that we cannot keep scrolling forever.
+	var zoom = get_zoom()
+	var viewport = get_viewport_rect()
+	var actual_left_limit = viewport.end.x * zoom.x / 2
+	var actual_top_limit = viewport.end.y * zoom.y / 2
+	
+	position.x = clamp(position.x, actual_left_limit, limit_right - actual_left_limit)
+	position.y = clamp(position.y, actual_top_limit, limit_bottom - actual_top_limit)
+	
 	# Set camera movement to zero, update old mouse position.
 	camera_movement = Vector2(0,0)
 	_prev_mouse_pos = get_local_mouse_position()
